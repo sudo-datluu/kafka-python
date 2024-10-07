@@ -1,3 +1,5 @@
+from .ErrorCode import ErrorCode
+
 class _KafkaRequest:
     SUPPORTED_API_VERSIONS = [0, 1, 2, 3, 4]
 
@@ -54,7 +56,8 @@ class APIVersions:
         self.kafka_request = _KafkaRequest(data)
         print(self.kafka_request)
         self.body = _Body(
-            error = 0 if self.kafka_request.isAllowed() else 35
+            error = ErrorCode.NO_ERROR.value 
+            if self.kafka_request.isAllowed() else ErrorCode.UNSUPPORTED_VERSION.value
         )
         print(self.body)
         
