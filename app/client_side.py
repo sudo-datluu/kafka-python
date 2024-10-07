@@ -5,16 +5,18 @@ def send_request():
     client.connect(("localhost", 9092))
     
     # Define the header values
-    apikey = 123 # Example 8-byte API key
-    apiversion = (1).to_bytes(4, byteorder='big')  # Example API version as a 4-byte integer
+    apikey = (18).to_bytes(2, byteorder='big') # Example 8-byte API key
+    apiversion = (43).to_bytes(2, byteorder='big')  # Example API version as a 4-byte integer
     correlationid = (1234).to_bytes(4, byteorder='big')  # Example correlation id as a 4-byte integer
     clientid = "clientid"  # Example 8-byte client ID
     
     # Construct the message (headers + any body you want to send)
-    message = apikey.encode('utf-8') + apiversion + correlationid + clientid.encode('utf-8')
+    message = apikey + apiversion + correlationid + clientid.encode('utf-8')
     
+    header = (len(message)).to_bytes(4, byteorder='big')
+
     # Send the message to the server
-    client.sendall(message)
+    client.sendall(header + message)
     
     # Wait for the response from the server
     response = client.recv(1024)
