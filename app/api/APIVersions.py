@@ -8,13 +8,13 @@ class _KafkaRequest:
             raise ValueError("Invalid header size")
         self.data = data
         # Extract the API key from the datauest
-        self.api_key = int.from_bytes(data[4:6], byteorder='big') 
+        self.api_key = int.from_bytes(data[4:6], byteorder='big', signed=True) 
 
         # Extract the API version from the dataues
         self.api_version = int.from_bytes(data[6:8], byteorder='big')
 
         # Extract the correlation ID from the datauest
-        self.correlation_id = int.from_bytes(data[8:12], byteorder='big')
+        self.correlation_id = int.from_bytes(data[8:12], byteorder='big', signed=True)
 
         # Extract the client ID from the datauest
         self.client_id = None
@@ -48,7 +48,7 @@ class _Body:
         )
 
     def __str__(self):
-        return f"Error: {self.error}, API Key: {self.api_key}, Min Version: {self.min_version}, Max Version: {self.max_version}, Tag Buffer: {self.tag_buffer}, Throttle Time: {self.throttle_time_ms}"  
+        return f"[RESPONSE BODY] Error: {self.error}, API Key: {self.api_key}, Min Version: {self.min_version}, Max Version: {self.max_version}, Tag Buffer: {self.tag_buffer}, Throttle Time: {self.throttle_time_ms}"  
 
 
 class APIVersions:
@@ -59,7 +59,8 @@ class APIVersions:
             error = ErrorCode.NO_ERROR.value 
             if self.kafka_request.isAllowed() else ErrorCode.UNSUPPORTED_VERSION.value
         )
-        print(self.body)
+        
+        print(f"[RESPONSE HEADER]: {self.kafka_request.correlation_id} | {self.body}")
         
         self.response_header = self.kafka_request.correlation_id.to_bytes(4, byteorder='big', signed=True)
         self.size = len(self.response_header + self.body.data)
