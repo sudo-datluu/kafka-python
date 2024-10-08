@@ -1,4 +1,4 @@
-from .ErrorCode import ErrorCode
+from .errors_code import ErrorCode
 
 class _KafkaRequest:
     SUPPORTED_API_VERSIONS = [0, 1, 2, 3, 4]
