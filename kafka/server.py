@@ -18,9 +18,7 @@ class KafkaServer:
                 request = await KafkaRequest.from_stream_reader(reader)
             except asyncio.IncompleteReadError:
                 break
-
             response = KafkaResponse.from_request(request)
-            print(response)
             writer.write(response.encode())
             await writer.drain()
 

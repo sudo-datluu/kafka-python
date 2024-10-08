@@ -1,4 +1,5 @@
 from typing import Callable, Any, Optional
+import uuid
 
 class Encoder:
     EncodeFunction = Callable[[Any], bytes]
@@ -46,3 +47,21 @@ class Encoder:
             for item in array
         )
         return Encoder.encode_varint(len(array) + 1) + encoding_items
+    
+    @staticmethod
+    def encode_compact_string(string: str) -> bytes:
+        return Encoder.encode_varint(len(string) + 1) + string.encode('utf-8')
+    
+    @staticmethod
+    def encode_uuid(uuid: uuid.UUID) -> bytes:
+        return uuid.bytes
+    
+    @staticmethod
+    def encode_compact_nullable_string(string: str) -> bytes:
+        if not string: return Encoder.encode_varint(0)
+
+        return Encoder.encode_varint(len(string) + 1) + string.encode('utf-8')
+    
+    @staticmethod
+    def encode_boolean(boolean: bool) -> bytes:
+        return b"\x01" if boolean else b"\x00"

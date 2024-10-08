@@ -47,8 +47,12 @@ class KafkaResponse:
 
         match request.header.api_key:
             case ApiKey.API_VERSIONS:
-                from .api_versions.response import ApiVersionsResponseBody
+                from kafka.messages.api_versions.response import ApiVersionsResponseBody
                 body_class = ApiVersionsResponseBody
+            case ApiKey.DESCRIBE_TOPIC_PARTITIONS:
+                from kafka.messages.describe_topic_partions.response import DescribeTopicPartionsResponseBody
+                body_class = DescribeTopicPartionsResponseBody
+
         return KafkaResponse(header, body_class.from_request(request))
 
     def encode(self) -> bytes:

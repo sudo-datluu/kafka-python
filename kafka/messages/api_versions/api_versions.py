@@ -1,4 +1,4 @@
-from .errors_code import ErrorCode
+from ...protocol.errors_code import ErrorCode
 
 class _KafkaRequest:
     SUPPORTED_API_VERSIONS = [0, 1, 2, 3, 4]
@@ -60,7 +60,7 @@ class APIVersions:
             if self.kafka_request.isAllowed() else ErrorCode.UNSUPPORTED_VERSION.value
         )
         
-        print(f"[RESPONSE HEADER]: {self.kafka_request.correlation_id} | {self.body}")
+        # print(f"[RESPONSE HEADER]: {self.kafka_request.correlation_id} | {self.body}")
         
         self.response_header = self.kafka_request.correlation_id.to_bytes(4, byteorder='big', signed=True)
         self.size = len(self.response_header + self.body.data)

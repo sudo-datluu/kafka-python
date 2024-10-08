@@ -1,6 +1,6 @@
 from __future__ import annotations
-from ..protocol.api_key import ApiKey
-from ..protocol.decoder import Decoder
+from kafka.protocol.api_key import ApiKey
+from kafka.protocol.decoder import Decoder
 
 import dataclasses
 import io
@@ -21,7 +21,7 @@ class _KafkaRequestHeader:
         api_version = Decoder.decode_int16(byte_stream)
         correlation_id = Decoder.decode_int32(byte_stream)
         client_id = Decoder.decode_nullable_string(byte_stream)
-        
+        Decoder.decode_tagged_fields(byte_stream)
         return _KafkaRequestHeader(api_key, api_version, correlation_id, client_id)
 
     def __str__(self) -> str:
@@ -47,16 +47,17 @@ class KafkaRequest:
 
         print(f"Raw data: {byte_stream.getvalue()}")
         request_header = _KafkaRequestHeader.decode(byte_stream)
-        print(request_header)
-
         match request_header.api_key:
             # Handle the case where the API key is API_VERSIONS
             case ApiKey.API_VERSIONS:
-                from .api_versions.request import ApiVersionsRequestBody
+                from kafka.messages.api_versions.request import ApiVersionsRequestBody
                 request_body_class = ApiVersionsRequestBody
             # Handle the case where the API key is DESCRIBE_TOPIC_PARTITIONS
             case ApiKey.DESCRIBE_TOPIC_PARTITIONS:
-                pass
-        
+                from kafka.messages.describe_topic_partions.request import DescribeTopicPartionsRequestBody
+                request_body_class = DescribeTopicPartionsRequestBody
         return KafkaRequest(request_header, request_body_class.decode(byte_stream))
+
+    def __str__(self) -> str:
+        return f"{self.header}\n{self.body}"
                 

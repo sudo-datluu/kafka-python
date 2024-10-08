@@ -1,6 +1,6 @@
 from __future__ import annotations
-from ...protocol.decoder import Decoder
-from ...protocol.encoder import Encoder
+from .decoder import Decoder
+from .encoder import Encoder
 
 import io
 import enum
@@ -8,7 +8,9 @@ import enum
 @enum.unique
 class ErrorCode(enum.IntEnum):
     NO_ERROR = 0
+    UNKNOWN_TOPIC_OR_PARTITION = 3
     UNSUPPORTED_VERSION = 35
+    UNKNOWN_TOPIC_ID = 100
 
     @classmethod
     def decode(cls, byte_stream: io.BytesIO) -> ErrorCode:

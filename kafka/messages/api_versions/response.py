@@ -3,8 +3,8 @@ import dataclasses
 
 from kafka.messages.request import KafkaRequest
 
-from .errors_code import ErrorCode
-from .request import ApiVersionsRequestBody
+from kafka.protocol.errors_code import ErrorCode
+from kafka.messages.api_versions.request import ApiVersionsRequestBody
 from kafka.messages.response import _KafkaResponseBody
 from kafka.protocol import ApiKey, Encoder
 
