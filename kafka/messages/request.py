@@ -1,6 +1,7 @@
 from __future__ import annotations
 from kafka.protocol.api_key import ApiKey
 from kafka.protocol.decoder import Decoder
+from kafka.protocol.encoder import Encoder
 
 import dataclasses
 import io
@@ -18,9 +19,13 @@ class _KafkaRequestHeader:
     @classmethod
     def decode(cls, byte_stream: io.BufferedIOBase) -> _KafkaRequestHeader:
         api_key = ApiKey.decode(byte_stream)
+        print(api_key)
         api_version = Decoder.decode_int16(byte_stream)
+        print(api_version)
         correlation_id = Decoder.decode_int32(byte_stream)
+        print(correlation_id)
         client_id = Decoder.decode_nullable_string(byte_stream)
+        print(client_id)
         Decoder.decode_tagged_fields(byte_stream)
         return _KafkaRequestHeader(api_key, api_version, correlation_id, client_id)
 
@@ -45,7 +50,7 @@ class KafkaRequest:
         message_length = int.from_bytes(await stream_reader.readexactly(4), byteorder='big')
         byte_stream = io.BytesIO(await stream_reader.readexactly(message_length))
 
-        print(f"Raw data: {byte_stream.getvalue()}")
+        print(f"Raw data: {Encoder.encode_int32(message_length) + byte_stream.getvalue()}")
         request_header = _KafkaRequestHeader.decode(byte_stream)
         match request_header.api_key:
             # Handle the case where the API key is API_VERSIONS
