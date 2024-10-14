@@ -46,7 +46,6 @@ class Decoder:
             continuation, n = divmod(int.from_bytes(byte_stream.read(1), signed=False), BASE)
             integer += n * multiplier
             if not continuation:
-                print(integer)
                 return integer
             multiplier *= BASE
 
