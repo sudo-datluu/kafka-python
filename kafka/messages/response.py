@@ -50,7 +50,7 @@ class KafkaResponse:
                 from kafka.messages.api_versions.response import ApiVersionsResponseBody
                 body_class = ApiVersionsResponseBody
             case ApiKey.DESCRIBE_TOPIC_PARTITIONS:
-                from kafka.messages.describe_topic_partions.response import DescribeTopicPartionsResponseBody
+                from kafka.messages.describe_topic_partitions.response import DescribeTopicPartionsResponseBody
                 body_class = DescribeTopicPartionsResponseBody
 
         return KafkaResponse(header, body_class.from_request(request))

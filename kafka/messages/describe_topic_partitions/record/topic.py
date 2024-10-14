@@ -5,7 +5,7 @@ import io
 import uuid
 
 from kafka.protocol.decoder import Decoder
-from kafka.record.template import _KafkaRecord
+from kafka.messages.describe_topic_partitions.record.template import _KafkaRecord
 
 @dataclasses.dataclass
 class Topic(_KafkaRecord):

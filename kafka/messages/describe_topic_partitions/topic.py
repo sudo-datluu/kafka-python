@@ -1,6 +1,6 @@
 from __future__ import annotations
 from kafka.protocol import Decoder, Encoder, ErrorCode
-from kafka.record.manager import RecordManager
+from kafka.messages.describe_topic_partitions.record.manager import RecordManager
 
 import io
 import dataclasses

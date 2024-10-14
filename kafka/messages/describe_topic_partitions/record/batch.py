@@ -4,7 +4,7 @@ import io
 
 from kafka.protocol.decoder import Decoder
 
-from kafka.record.template import _KafkaRecord, decode_record
+from kafka.messages.describe_topic_partitions.record.template import _KafkaRecord, decode_record
 
 @dataclasses.dataclass
 class BatchRecord:

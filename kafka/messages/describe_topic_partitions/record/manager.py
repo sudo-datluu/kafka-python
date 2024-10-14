@@ -3,10 +3,10 @@ import io
 import uuid
 from typing import Generator, Optional
 
-from kafka.record.partition import Partition
-from kafka.record.topic import Topic
+from kafka.messages.describe_topic_partitions.record.partition import Partition
+from kafka.messages.describe_topic_partitions.record.topic import Topic
 
-from kafka.record.batch import BatchRecord
+from kafka.messages.describe_topic_partitions.record.batch import BatchRecord
 
 class SingletonMeta(type):
     _instances = {}

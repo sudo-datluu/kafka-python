@@ -23,13 +23,13 @@ def decode_record(byte_stream: io.BufferedIOBase, record_type: type[_KafkaRecord
 
     match record_type:
         case 2:
-            from kafka.record.topic import Topic
+            from kafka.messages.describe_topic_partitions.record.topic import Topic
             record_class = Topic
         case 3:
-            from kafka.record.partition import Partition
+            from kafka.messages.describe_topic_partitions.record.partition import Partition
             record_class = Partition
         case 12:
-            from kafka.record.feature_level import FeatureLevel
+            from kafka.messages.describe_topic_partitions.record.feature_level import FeatureLevel
             record_class = FeatureLevel
         case _:
             raise ValueError(f"Unknown record type: {record_type}")

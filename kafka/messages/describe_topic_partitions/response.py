@@ -3,13 +3,13 @@ from __future__ import annotations
 import dataclasses
 import uuid
 
-# from kafka.messages.describe_topic_partions.cursor import Cursor
+# from kafka.messages.describe_topic_partitions.cursor import Cursor
 from kafka.messages.request import KafkaRequest
 from kafka.protocol import Decoder, ErrorCode, Encoder
 from kafka.messages.response import _KafkaResponseBody
-from kafka.messages.describe_topic_partions.topic import TopicItemResponse
-from kafka.messages.describe_topic_partions.request import DescribeTopicPartionsRequestBody
-from kafka.record.manager import RecordManager
+from kafka.messages.describe_topic_partitions.topic import TopicItemResponse
+from kafka.messages.describe_topic_partitions.request import DescribeTopicPartionsRequestBody
+from kafka.messages.describe_topic_partitions.record.manager import RecordManager
 
 
 @dataclasses.dataclass

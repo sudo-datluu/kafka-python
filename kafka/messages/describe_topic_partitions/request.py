@@ -5,8 +5,8 @@ import io
 
 from kafka.protocol.decoder import Decoder
 from kafka.messages.request import _KafkaRequestBody
-# from kafka.messages.describe_topic_partions.cursor import Cursor
-from kafka.messages.describe_topic_partions.topic import TopicItemRequest
+# from kafka.messages.describe_topic_partitions.cursor import Cursor
+from kafka.messages.describe_topic_partitions.topic import TopicItemRequest
 
 @dataclasses.dataclass
 class DescribeTopicPartionsRequestBody(_KafkaRequestBody):

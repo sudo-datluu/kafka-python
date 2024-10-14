@@ -55,7 +55,7 @@ class KafkaRequest:
                 request_body_class = ApiVersionsRequestBody
             # Handle the case where the API key is DESCRIBE_TOPIC_PARTITIONS
             case ApiKey.DESCRIBE_TOPIC_PARTITIONS:
-                from kafka.messages.describe_topic_partions.request import DescribeTopicPartionsRequestBody
+                from kafka.messages.describe_topic_partitions.request import DescribeTopicPartionsRequestBody
                 request_body_class = DescribeTopicPartionsRequestBody
         return KafkaRequest(request_header, request_body_class.decode(byte_stream))
 
