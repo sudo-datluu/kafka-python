@@ -48,6 +48,13 @@ class Decoder:
             if not continuation:
                 return integer
             multiplier *= BASE
+    
+    @staticmethod
+    def decode_varlong(byte_stream: io.BytesIO, signed=False) -> int:
+        integer = Decoder.decode_varint(byte_stream)
+        if signed and integer >= (1 << 63):
+            integer -= (1 << 64)
+        return integer
 
     @staticmethod
     def decode_compact_string(byte_stream: io.BytesIO) -> str:

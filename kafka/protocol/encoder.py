@@ -39,6 +39,11 @@ class Encoder:
             encoding += byte.to_bytes(1, byteorder="big")
             if interger == 0: return encoding
 
+    @staticmethod
+    def encode_varlong(interger: int) -> bytes:
+        if integer < 0: 
+            integer += 1 << 64
+        return Encoder.encode_varint(integer)
 
     @staticmethod
     def encode_compact_array(array: list, encode_function: Optional[EncodeFunction] = None) -> bytes:
