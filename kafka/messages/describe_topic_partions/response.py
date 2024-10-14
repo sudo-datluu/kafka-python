@@ -9,7 +9,7 @@ from kafka.protocol import Decoder, ErrorCode, Encoder
 from kafka.messages.response import _KafkaResponseBody
 from kafka.messages.describe_topic_partions.topic import TopicItemResponse
 from kafka.messages.describe_topic_partions.request import DescribeTopicPartionsRequestBody
-
+from kafka.record.manager import RecordManager
 
 
 @dataclasses.dataclass
@@ -22,20 +22,11 @@ class DescribeTopicPartionsResponseBody(_KafkaResponseBody):
     def from_request(cls, request: KafkaRequest) -> DescribeTopicPartionsResponseBody:
         assert type(request.body) is DescribeTopicPartionsRequestBody, f"Expected {DescribeTopicPartionsRequestBody}, got {type(request.body)}"
 
-        topics = [
-            TopicItemResponse(
-                error_code=ErrorCode.UNKNOWN_TOPIC_OR_PARTITION,
-                name=request.body.topics[0].name,
-                topic_id=uuid.UUID(int=0),
-                is_internal=False,
-                partitions=[],
-                topic_authorized_operations=0
-            )
-        ]
+        record_manger = RecordManager()
 
         return DescribeTopicPartionsResponseBody(
             throttle_time_ms=0,
-            topics=topics,
+            topics=[TopicItemResponse.from_topic_name(topic.name, record_manger) for topic in request.body.topics],
             # next_cursor=request.body.cursor
         )
     

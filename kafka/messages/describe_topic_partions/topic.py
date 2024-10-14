@@ -1,5 +1,7 @@
 from __future__ import annotations
 from kafka.protocol import Decoder, Encoder, ErrorCode
+from kafka.record.manager import RecordManager
+
 import io
 import dataclasses
 import uuid
@@ -25,6 +27,36 @@ class TopicItemResponse:
     partitions: list[_PartitionItem]
     topic_authorized_operations: int
 
+    @classmethod
+    def from_topic_name(cls, topic_name: str, record_manager: RecordManager) -> TopicItemResponse:
+        topic_record = record_manager.get_topic(topic_name)
+
+        if topic_record is None:
+            return TopicItemResponse(
+                error_code=ErrorCode.UNKNOWN_TOPIC_OR_PARTITION,
+                name=topic_name,
+                topic_id=uuid.UUID(int=0),
+                is_internal=False,
+                partitions=[],
+                topic_authorized_operations=0
+            )
+
+        topic_id = topic_record.topic_id
+        partitions = [
+            _PartitionItem(error_code=ErrorCode.NO_ERROR, partition_index=partition_record.partition_id)
+            for partition_record in record_manager.get_partitions(topic_id)
+        ]
+        partitions.sort(key=lambda p: p.partition_index)
+
+        return TopicItemResponse(
+            error_code=ErrorCode.NO_ERROR,
+            name=topic_name,
+            topic_id=topic_id,
+            is_internal=False,
+            partitions=partitions,
+            topic_authorized_operations=0
+        )
+
     def encode(self) -> bytes:
         return b"".join([
             self.error_code.encode(),
@@ -38,16 +70,15 @@ class TopicItemResponse:
     
 @dataclasses.dataclass
 class _PartitionItem:
-    name: str
     error_code: ErrorCode
     partition_index: int
-    leader_id: int
-    leader_epoch: int
-    replica_nodes: list[int]
-    isr_nodes: list[int]
-    eligible_leader_replicas: list[int]
-    last_know_elr: list[int]
-    offline_replicas: list[int]
+    leader_id: int = 0
+    leader_epoch: int = 0
+    replica_nodes: list[int] = dataclasses.field(default_factory=list)
+    isr_nodes: list[int] = dataclasses.field(default_factory=list)
+    eligible_leader_replicas: list[int] = dataclasses.field(default_factory=list)
+    last_know_elr: list[int] = dataclasses.field(default_factory=list)
+    offline_replicas: list[int] = dataclasses.field(default_factory=list)
 
     def encode(self) -> bytes:
         return b"".join([

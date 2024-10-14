@@ -60,3 +60,12 @@ class Decoder:
     def decode_compact_string(byte_stream: io.BytesIO) -> str:
         length = Decoder.decode_varint(byte_stream) - 1
         return byte_stream.read(length).decode('utf-8')
+
+    @staticmethod
+    def decode_compact_bytes(byte_stream: io.BufferedIOBase) -> bytes:
+        n = Decoder.decode_varint(byte_stream) - 1
+        return byte_stream.read(n)
+    
+    @staticmethod
+    def decode_uuid(byte_stream: io.BytesIO) -> uuid.UUID:
+        return uuid.UUID(bytes=byte_stream.read(16))
