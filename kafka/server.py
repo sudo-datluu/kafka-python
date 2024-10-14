@@ -19,7 +19,7 @@ class KafkaServer:
             except asyncio.IncompleteReadError:
                 break
             response = KafkaResponse.from_request(request)
-            print(f"[RESPONSE] {response}")
+            print(f"[RESPONSE HEADER] {response.header}\n[RESPONSE BODY] {response.body}")
             writer.write(response.encode())
             await writer.drain()
 

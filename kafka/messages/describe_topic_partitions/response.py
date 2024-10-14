@@ -3,7 +3,6 @@ from __future__ import annotations
 import dataclasses
 import uuid
 
-# from kafka.messages.describe_topic_partitions.cursor import Cursor
 from kafka.messages.request import KafkaRequest
 from kafka.protocol import Decoder, ErrorCode, Encoder
 from kafka.messages.response import _KafkaResponseBody
@@ -16,7 +15,6 @@ from kafka.messages.describe_topic_partitions.record.manager import RecordManage
 class DescribeTopicPartionsResponseBody(_KafkaResponseBody):
     throttle_time_ms: int
     topics: list[TopicItemResponse]
-    # next_cursor: Cursor
 
     @classmethod
     def from_request(cls, request: KafkaRequest) -> DescribeTopicPartionsResponseBody:

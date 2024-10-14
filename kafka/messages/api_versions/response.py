@@ -24,9 +24,6 @@ class ApiKeyItem:
             Encoder.encode_tagged_fields()
         ])
 
-    def __str__(self) -> str:
-        return f"<Key: {self.api_key}, Min version: {self.min_version}, Max version: {self.max_version}>"
-
 @dataclasses.dataclass
 class ApiVersionsResponseBody(_KafkaResponseBody):
     error_code: ErrorCode
@@ -55,13 +52,3 @@ class ApiVersionsResponseBody(_KafkaResponseBody):
             Encoder.encode_int32(self.throttle_time_ms),
             Encoder.encode_tagged_fields()
         ])
-
-    def __str__(self) -> str:
-        outstream = "\n"
-        outstream += f"[KAFKA REPONSE BODY]\n"
-        outstream += f"- Error: {self.error_code}\n"
-        outstream += f"- API Keys:\n"
-        for api_key in self.api_keys:
-            outstream += f"  + {api_key}\n"
-        outstream += f"- Throttle Time: {self.throttle_time_ms}"
-        return f"{outstream}"

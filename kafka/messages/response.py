@@ -60,7 +60,4 @@ class KafkaResponse:
         return Encoder.encode_int32(len(message)) + message
     
     def __str__(self) -> str:
-        outstream = "\n"
-        outstream += f"{self.header}"
-        outstream += f"{self.body}\n"
-        return f"[KAFKA RESPONSE]{outstream}"
+        return f"[RESPONSE HEADER] {self.header}\n[RESPONSE BODY] {self.body}"
