@@ -39,6 +39,7 @@ class ApiVersionsResponseBody(_KafkaResponseBody):
         return ApiVersionsResponseBody(
             error_code = error_code,
             api_keys = [
+                ApiKeyItem(ApiKey.FETCH, min_version=0, max_version=16),
                 ApiKeyItem(ApiKey.API_VERSIONS, min_version=0, max_version=4),
                 ApiKeyItem(ApiKey.DESCRIBE_TOPIC_PARTITIONS, min_version=0, max_version=0),
             ],

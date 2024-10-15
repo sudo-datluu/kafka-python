@@ -8,6 +8,8 @@ import io
 import asyncio
 import abc
 
+
+
 # Define a dataclass for the request header
 @dataclasses.dataclass
 class _KafkaRequestHeader:
@@ -49,6 +51,10 @@ class KafkaRequest:
         print(f"Raw data: {Encoder.encode_int32(message_length) + byte_stream.getvalue()}")
         request_header = _KafkaRequestHeader.decode(byte_stream)
         match request_header.api_key:
+            # Handle the case where the API key is FETCH
+            case ApiKey.FETCH:
+                from kafka.messages.fetch.request import FetchRequestBody
+                request_body_class = FetchRequestBody
             # Handle the case where the API key is API_VERSIONS
             case ApiKey.API_VERSIONS:
                 from kafka.messages.api_versions.request import ApiVersionsRequestBody

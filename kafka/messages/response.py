@@ -3,9 +3,8 @@ from __future__ import annotations
 import dataclasses
 import abc
 
-from kafka.protocol import ApiKey, Decoder, Encoder
-from .request import _KafkaRequestHeader, KafkaRequest
-
+from kafka.protocol import ApiKey, Encoder
+from kafka.messages.request import _KafkaRequestHeader, KafkaRequest
 @dataclasses.dataclass
 class _KafkaResponseHeader:
     api_key: ApiKey # Define the header format
@@ -44,8 +43,10 @@ class KafkaResponse:
     @classmethod
     def from_request(cls, request: KafkaRequest) -> KafkaResponse:
         header = _KafkaResponseHeader.from_request_header(request.header)
-
         match request.header.api_key:
+            case ApiKey.FETCH:
+                from kafka.messages.fetch.response import FetchReponseBody
+                body_class = FetchReponseBody
             case ApiKey.API_VERSIONS:
                 from kafka.messages.api_versions.response import ApiVersionsResponseBody
                 body_class = ApiVersionsResponseBody
