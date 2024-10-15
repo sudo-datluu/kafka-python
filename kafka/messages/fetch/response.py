@@ -22,7 +22,7 @@ class FetchReponseBody(_KafkaResponseBody):
         if not request.body.topics:
             return FetchReponseBody(
                 throttle_time_ms=0,
-                error_code=ErrorCode.NONE,
+                error_code=ErrorCode.NO_ERROR,
                 session_id=request.body.session_id,
                 responses=[]
             )
@@ -37,6 +37,15 @@ class FetchReponseBody(_KafkaResponseBody):
             session_id=request.body.session_id,
             responses=[response_items]
         )
+
+    def encode(self) -> bytes:
+        return b"".join([
+            Encoder.encode_int32(self.throttle_time_ms),
+            self.error_code.encode(),
+            Encoder.encode_int32(self.session_id),
+            Encoder.encode_compact_array(self.responses, _FetchResponseItem.encode),
+            Encoder.encode_tagged_fields(),
+        ])
 
 @dataclasses.dataclass
 class _FetchResponseItem:
