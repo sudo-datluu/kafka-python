@@ -33,7 +33,7 @@ class FetchReponseBody(_KafkaResponseBody):
         )
         return FetchReponseBody(
             throttle_time_ms=0,
-            error_code=ErrorCode.NONE,
+            error_code=ErrorCode.NO_ERROR,
             session_id=request.body.session_id,
             responses=[response_items]
         )
