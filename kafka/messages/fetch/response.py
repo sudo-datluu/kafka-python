@@ -8,6 +8,7 @@ from kafka.protocol.errors_code import ErrorCode
 from kafka.messages.request import KafkaRequest
 from kafka.messages.response import _KafkaResponseBody
 from kafka.messages.fetch.request import FetchRequestBody
+from kafka.messages.describe_topic_partitions.record.manager import RecordManager
 
 @dataclasses.dataclass
 class FetchReponseBody(_KafkaResponseBody):
@@ -19,23 +20,14 @@ class FetchReponseBody(_KafkaResponseBody):
     @classmethod
     def from_request(cls, request: KafkaRequest) -> FetchReponseBody:
         assert type(request.body) is FetchRequestBody, f"Expected FetchRequestBody but got {type(request.body)}"
-        if not request.body.topics:
-            return FetchReponseBody(
-                throttle_time_ms=0,
-                error_code=ErrorCode.NO_ERROR,
-                session_id=request.body.session_id,
-                responses=[]
-            )
-        topic_items = request.body.topics[0]
-        response_items = _FetchResponseItem(
-            topic_id=topic_items.topic_id,
-            partitions=[ _FetchResponsePartition(partition_index=0, error_code=ErrorCode.UNKNOWN_TOPIC_ID) ]
-        )
         return FetchReponseBody(
             throttle_time_ms=0,
             error_code=ErrorCode.NO_ERROR,
             session_id=request.body.session_id,
-            responses=[response_items]
+            responses=[
+                _FetchResponseItem.from_topic_id(topic_id=topic.topic_id)
+                for topic in request.body.topics
+            ]
         )
 
     def encode(self) -> bytes:
@@ -51,6 +43,32 @@ class FetchReponseBody(_KafkaResponseBody):
 class _FetchResponseItem:
     topic_id: uuid.UUID
     partitions: list[_FetchResponsePartition]
+
+    @classmethod
+    def from_topic_id(cls, topic_id: uuid.UUID) -> _FetchResponseItem:
+        record_manager = RecordManager()
+        fetch_item = _FetchResponseItem(
+            topic_id=topic_id,
+            partitions=[
+                _FetchResponsePartition(
+                    partition_index=partition.partition_id,
+                    error_code=ErrorCode.NO_ERROR,
+                )
+                for partition in record_manager.get_partitions(topic_id)
+            ]
+        )
+        if fetch_item.partitions: return fetch_item
+        error_code = ErrorCode.NO_ERROR if record_manager.has_topic(topic_id) else ErrorCode.UNKNOWN_TOPIC_ID
+        return _FetchResponseItem(
+            topic_id=topic_id,
+            partitions=[
+                _FetchResponsePartition(
+                    partition_index=0,
+                    error_code=error_code,
+                )
+            ]
+        )
+
     def encode(self) -> bytes:
         return b"".join([
             Encoder.encode_uuid(self.topic_id),
