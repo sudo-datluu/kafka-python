@@ -48,7 +48,7 @@ class KafkaRequest:
         message_length = int.from_bytes(await stream_reader.readexactly(4), byteorder='big')
         byte_stream = io.BytesIO(await stream_reader.readexactly(message_length))
 
-        print(f"Raw data: {Encoder.encode_int32(message_length) + byte_stream.getvalue()}")
+        print(f"[Raw data]\n[Header]{Encoder.encode_int32(message_length)}\n[Body]{byte_stream.getvalue()}")
         request_header = _KafkaRequestHeader.decode(byte_stream)
         match request_header.api_key:
             # Handle the case where the API key is FETCH
