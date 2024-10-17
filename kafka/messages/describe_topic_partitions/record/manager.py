@@ -41,3 +41,6 @@ class RecordManager(metaclass=SingletonMeta):
         for partition in self._partitions:
             if partition.topic_id == topic_id:
                 yield partition
+    
+    def has_topic(self, topic_id: uuid.UUID) -> bool:
+        return any(topic.topic_id == topic_id for topic in self._topics)
